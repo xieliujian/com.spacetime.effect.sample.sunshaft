@@ -1,0 +1,6 @@
+[submodule "Packages/com.spacetime.core"]
+	path = Packages/com.spacetime.core
+	url = git@github.com:xieliujian/com.spacetime.core.git
+[submodule "Packages/com.spacetime.effect"]
+	path = Packages/com.spacetime.effect
+	url = git@github.com:xieliujian/com.spacetime.effect.git
