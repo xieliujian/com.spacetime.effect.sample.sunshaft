@@ -1,137 +1,57 @@
+# SunShaft 光线
 
-# SunShaft光线
+基于 URP ScriptableRendererFeature 的太阳光轴（体积光）后处理效果示例工程。
 
-![github](https://github.com/xieliujian/UnityDemo_SunShaft/blob/main/Video/1.png?raw=true)
+效果文档参考：[SunShaft 光线](https://github.com/xieliujian/com.spacetime.effect/blob/main/readme/SunShaft/SunShaft.md)
 
-## 第一步
+---
 
-采样光线颜色
+## 快速开始
 
-![github](https://github.com/xieliujian/UnityDemo_SunShaft/blob/main/Video/2.png?raw=true)
+### 第一步：添加 Renderer Feature
 
-Shader片段
-
-```cs
-
-float4 frag(Varyings input) : SV_Target
-{
-    float4 uv = input.uv;
-    float4 screenPos = input.ScreenPosition;
-
-    // Distance from Sun
-    float disFromSun = length(_SunPosition.xy - uv.xy);
-
-    // Limit for SkyBox by Sun Distance
-    float limitSkyBySunDis = saturate(_SunThresholdSky - disFromSun);
-
-    // 
-    float sceneDepth = Linear01Depth(SHADERGRAPH_SAMPLE_SCENE_DEPTH(screenPos.xy / screenPos.w), _ZBufferParams);
-    float sceneDepthComp = (sceneDepth >= 0.99) ? 1 : 0;
-
-    limitSkyBySunDis *= sceneDepthComp;
-
-    // 
-    float4 mainTexColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv.xy);
-    float noiseVal;
-    Unity_SimpleNoise_float(uv.xy, _SkyNoiseScale, noiseVal);
-    mainTexColor *= noiseVal;
-
-    float4 color = mainTexColor * limitSkyBySunDis;
-
-    return color;
-}
+在 URP Renderer Asset 中添加 `SunShaftsFeatureV2`：
 
 ```
-
-## 第二步
-
-径向模糊
-
-![github](https://github.com/xieliujian/UnityDemo_SunShaft/blob/main/Video/3.png?raw=true)
-
-Shader片段
-
-```cs
-
-float4 frag(Varyings input) : SV_Target
-{
-    float4 uv = input.uv;
-
-    // 
-    float2 uvOffset = (_SunPosition.xy - uv.xy) * _BlurStep;
-
-    // 1
-    float4 mainTexColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv.xy);
-
-    float2 uv1 = uv + uvOffset;
-    float4 mainTexColor1 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv1.xy);
-
-    float2 uvOffset2 = uvOffset + uvOffset;
-    float2 uv2 = uv + uvOffset2;
-    float4 mainTexColor2 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv2.xy);
-
-    float2 uvOffset3 = uvOffset2 + uvOffset2;
-    float2 uv3 = uv + uvOffset3;
-    float4 mainTexColor3 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv3.xy);
-
-    float2 uvOffset4 = uvOffset3 + uvOffset3;
-    float2 uv4 = uv + uvOffset4;
-    float4 mainTexColor4 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv4.xy);
-
-    float2 uvOffset5 = uvOffset4 + uvOffset4;
-    float2 uv5 = uv + uvOffset5;
-    float4 mainTexColor5 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv5.xy);
-
-    float4 color1 = mainTexColor + mainTexColor1;
-    float4 color2 = mainTexColor2 + mainTexColor3;
-    float4 color3 = mainTexColor4 + mainTexColor5;
-
-    float4 color4 = color1 + color2;
-    float4 color5 = color2 + color3;
-
-    float4 color6 = color4 + color5;
-
-    float4 color = color6 / 6;
-
-    return color;
-}
-
+Universal Renderer Data > Add Renderer Feature > SunShaftsFeatureV2
 ```
 
-## 第三步
+### 第二步：添加 Volume 组件
 
-和场景图混合
+在场景中创建 Volume（Global 或 Local），添加 `Post-processing > SunShafts` Override，将 `On` 开启即可启用效果。
 
-![github](https://github.com/xieliujian/UnityDemo_SunShaft/blob/main/Video/4.png?raw=true)
+### 第三步：配置参数
 
-Shader片段
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `On` | false | 启用/禁用效果 |
+| `Force On` | false | 强制开启，跳过角度可见性裁剪 |
+| `Intensity` | 1.5 | 光柱强度（0–5） |
+| `Use Sun Light Color` | true | 使用主方向光颜色作为光柱颜色 |
+| `Shafts Color` | black | 自定义光柱颜色（HDR） |
+| `Use Sun Position` | false | 手动指定太阳位置 |
+| `Sun Position` | Vector3.zero | 自定义太阳世界坐标 |
+| `Sun Threshold Sky` | 0.75 | 天空采样范围阈值（0–1） |
+| `Depth Downscale Pow2` | 3 | 降采样级别（0–4） |
+| `Blur Radius` | 1.2 | 径向模糊半径 |
+| `Blur Steps Count` | 2 | 径向模糊迭代次数（1–4） |
+| `Use Stencil Mask Tex` | false | 启用模板遮罩纹理 |
+| `Use Render Pass Event` | false | 自定义 RenderPass 插入时机 |
 
-```cs
+---
 
-float4 frag(Varyings input) : SV_Target
-{
-    float4 uv = input.uv;
+## 已知问题
 
-    // 
-    float4 shaftTexColor = SAMPLE_TEXTURE2D(_TmpBlurTex1, sampler_TmpBlurTex1, uv.xy);
-    shaftTexColor *= _Intensity;
-    shaftTexColor = saturate(shaftTexColor) * _ShaftsColor;
+### WebGL 打包后效果不显示
 
-    //
-    float4 maskTexColor = SAMPLE_TEXTURE2D(_StencilMaskTex, sampler_StencilMaskTex, uv.xy);
-    float maskVal = saturate(1 - saturate(maskTexColor));
-    maskVal = _UseStencilMaskTex * maskVal + (1 - _UseStencilMaskTex);
+**原因**：Unity WebGL 打包时会裁剪未被任何序列化资源引用的 Shader。SunShaft 的三个 Shader 通过 `Shader.Find()` 在运行时查找，不被任何 `.mat` 引用，打包后被剔除，导致材质创建失败、效果不渲染。
 
-    shaftTexColor *= maskVal;
+**修复**：在 `ProjectSettings/GraphicsSettings.asset` 的 `m_AlwaysIncludedShaders` 中加入三个 Shader（已修复）：
 
-    //
-    float4 mainTexColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv.xy);
+| Shader | 路径 |
+|--------|------|
+| BuildSkyForBlurShader | `SpaceTime/PostProcess/SunShaft/BuildSkyForBlurShader` |
+| DirectionalBlurShader | `SpaceTime/PostProcess/SunShaft/DirectionalBlurShader` |
+| FinalBlendShader | `SpaceTime/PostProcess/SunShaft/FinalBlendShader` |
 
-    // 
-    float4 color = mainTexColor + shaftTexColor;
-    //color = shaftTexColor;
-
-    return color;
-}
-
-```
+等效操作：`Edit → Project Settings → Graphics → Always Included Shaders` 手动添加上述三个 Shader。
