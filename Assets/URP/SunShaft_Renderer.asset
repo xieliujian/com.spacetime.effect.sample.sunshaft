@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9118824546290498585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 786a5298524f2d244bbd24ea80224155, type: 3}
+  m_Name: SunShaftsFeatureV2
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  props:
+    isOn: 0
+    forceOn: 0
+    filterMode: 1
+    intensity: 1.5
+    normalsLayerMask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useSunLightColor: 1
+    shaftsColor: {r: 0, g: 0, b: 0, a: 1}
+    useSunPosition: 0
+    sunPosition: {x: 0, y: 0, z: 0}
+    sunThresholdSky: 0.75
+    sunThresholdDepth: 0.75
+    skyNoiseScale: 75
+    depthDownscalePow2: 3
+    blurRadius: 1.2
+    blurStepsCount: 2
+    useRenderPassEvent: 0
+    renderPassEvent: 400
+    useStencilMaskTex: 0
+  shaftsPassEvent: 500
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13,8 +48,8 @@ MonoBehaviour:
   m_Name: SunShaft_Renderer
   m_EditorClassIdentifier: 
   m_RendererFeatures:
-  - {fileID: 684657296826801436}
-  m_RendererFeatureMap: 1c9d3d1a2f648009
+  - {fileID: -9118824546290498585}
+  m_RendererFeatureMap: e7033e85636d7381
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
@@ -60,13 +95,15 @@ MonoBehaviour:
     isOn: 1
     forceOn: 0
     filterMode: 1
-    intensity: 2.36
+    intensity: 1
     normalsLayerMask:
-      serializedVersion: 2
       m_Bits: 4294967295
-    outlineMode: 1
     useSunLightColor: 0
-    shaftsColor: {r: 0.11035956, g: 0.47433645, b: 0.754717, a: 1}
+    shaftsColor:
+      r: 0.68293875
+      g: 0.95041215
+      b: 0.9716981
+      a: 1
     useSunPosition: 0
     sunPosition: {x: 0, y: 0, z: 0}
     sunThresholdSky: 0.673
@@ -78,4 +115,5 @@ MonoBehaviour:
     useRenderPassEvent: 0
     renderPassEvent: 400
     useStencilMaskTex: 0
+    m_SunShafts: {fileID: 0}
   shaftsPassEvent: 500
