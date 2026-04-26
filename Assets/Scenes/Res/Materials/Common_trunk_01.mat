@@ -2,14 +2,20 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Common_trunk_01
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _METALLICSPECGLOSSMAP _NORMALMAP
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  - _METALLICSPECGLOSSMAP
+  - _NORMALMAP
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -18,6 +24,8 @@ Material:
     RenderType: Transparent
   disabledShaderPasses:
   - SHADOWCASTER
+  - DepthOnly
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -117,14 +125,17 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - EnableEffect: 0
     - _AO: 0.1
     - _AlphaClip: 1
     - _AlphaShift: 0.015
+    - _AlphaToMask: 0
     - _AlphaWidth: 2
     - _BendTerrain: 0
     - _Blend: 0
+    - _BlendModePreserveSpecular: 0
     - _BoxEnvironmentReflections: 0
     - _Btoom_Range: 0.5
     - _Btoom_range_move: -4.3
@@ -155,6 +166,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DistacneRevertDir: 0
     - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _EffectAuraColorFactor: 0.5
     - _EffectAuraFlowItensity: 1
     - _EffectAuraOutAlpha: 1
@@ -306,6 +318,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 5
+    - _SrcBlendAlpha: 1
     - _Stencil: 0
     - _StencilComp: 0
     - _StencilFail: 0
@@ -354,7 +367,7 @@ Material:
     - _BoxCubeReflBoxMax: {r: 5, g: 5, b: 5, a: 0}
     - _BoxCubeReflBoxMin: {r: -5, g: -5, b: -5, a: 0}
     - _BoxCubeReflCenter: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.875, g: 0.875, b: 0.875, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color_bottom: {r: 0.001334992, g: 0.09433961, b: 0.013100953, a: 1}
     - _Color_middle: {r: 0.015040946, g: 0.24528301, b: 0.015040946, a: 1}
     - _Color_top: {r: 0.11292719, g: 0.31132078, b: 0.027901383, a: 1}
@@ -415,4 +428,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 4
+  version: 7
